@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "projectName": "Template Hotel / Resort",
+    "clientName": "",
+    "date": "2025-01-01",
+    "unit": "m3_per_hari",
+    "notes": "Template neraca air sektor hotel/resort. Sesuaikan nilai sumber dan persentase dengan data aktual.",
+    "regulatoryVersion": "Permen LHK 5/2021",
+    "industrySector": "hotel"
+  },
+  "nodes": [
+    { "id": "src_pdam",   "type": "source", "subtype": "pdam",               "label": "PDAM",                        "value": 100, "position": { "x": 80,  "y": 180 } },
+    { "id": "src_sumur",  "type": "source", "subtype": "groundwater_shallow", "label": "Sumur Dangkal (Backup)",      "value": 30,  "position": { "x": 80,  "y": 360 } },
+    { "id": "src_hujan",  "type": "source", "subtype": "rainwater",           "label": "Air Hujan (RTH)",             "value": 10,  "position": { "x": 80,  "y": 540 } },
+
+    { "id": "use_toilet", "type": "usage",  "subtype": "toilet_urinoir",       "label": "Toilet Kamar",                "value": 0,   "position": { "x": 280, "y": 60  } },
+    { "id": "use_shower", "type": "usage",  "subtype": "wastafel_shower",      "label": "Shower Kamar",               "value": 0,   "position": { "x": 280, "y": 160 } },
+    { "id": "use_dapur",  "type": "usage",  "subtype": "kitchen_canteen",      "label": "Dapur / Restoran",            "value": 0,   "position": { "x": 280, "y": 260 } },
+    { "id": "use_ct",     "type": "usage",  "subtype": "cooling_tower_makeup", "label": "Cooling Tower (AC Central)", "value": 0,   "position": { "x": 280, "y": 360 } },
+    { "id": "use_kolam",  "type": "usage",  "subtype": "swimming_pool",        "label": "Kolam Renang",                "value": 0,   "position": { "x": 280, "y": 460 } },
+    { "id": "use_laund",  "type": "usage",  "subtype": "laundry_domestic",     "label": "Laundry",                     "value": 0,   "position": { "x": 280, "y": 560 } },
+    { "id": "use_taman",  "type": "usage",  "subtype": "garden_irrigation",    "label": "Penyiraman Taman (RTH)",      "value": 0,   "position": { "x": 280, "y": 660 } },
+
+    { "id": "loss_evap",  "type": "split_loss",     "subtype": "evaporation",         "label": "Penguapan CT",            "value": 0, "position": { "x": 480, "y": 310 } },
+    { "id": "loss_drift", "type": "split_loss",     "subtype": "drift_loss",          "label": "Drift Loss CT",           "value": 0, "position": { "x": 480, "y": 400 } },
+
+    { "id": "ww_bw",      "type": "split_classify", "subtype": "blackwater",          "label": "Blackwater (Toilet)",     "value": 0, "position": { "x": 480, "y": 60  } },
+    { "id": "ww_gw",      "type": "split_classify", "subtype": "greywater",           "label": "Greywater",               "value": 0, "position": { "x": 480, "y": 180 } },
+    { "id": "ww_blow",    "type": "split_classify", "subtype": "cooling_blowdown",    "label": "Blowdown Cooling Tower",  "value": 0, "position": { "x": 480, "y": 510 } },
+
+    { "id": "tp_eq",      "type": "treatment_unit", "subtype": "equalization_tank",   "label": "Bak Ekualisasi",          "value": 0, "position": { "x": 680, "y": 240 } },
+    { "id": "tp_bio",     "type": "treatment_unit", "subtype": "activated_sludge",    "label": "Lumpur Aktif",            "value": 0, "position": { "x": 680, "y": 360 } },
+    { "id": "tp_clo",     "type": "treatment_unit", "subtype": "chlorination",        "label": "Klorinasi",               "value": 0, "position": { "x": 680, "y": 480 } },
+
+    { "id": "dst_sungai", "type": "final_destination", "subtype": "discharge_surface_river", "label": "Sungai",                "value": 0, "position": { "x": 880, "y": 380 } },
+    { "id": "dst_reuse",  "type": "final_destination", "subtype": "reuse_garden",             "label": "Reuse Penyiraman Taman","value": 0, "position": { "x": 880, "y": 500 } },
+    { "id": "dst_nr",     "type": "final_destination", "subtype": "nr_evaporation",           "label": "Pelepasan Alami (Penguapan)", "value": 0, "position": { "x": 880, "y": 620 } }
+  ],
+  "edges": [
+    { "id": "e1",  "source": "src_pdam",   "target": "use_toilet", "rule": { "type": "percentage", "value": 30 }, "isReuse": false },
+    { "id": "e2",  "source": "src_pdam",   "target": "use_shower", "rule": { "type": "percentage", "value": 25 }, "isReuse": false },
+    { "id": "e3",  "source": "src_pdam",   "target": "use_dapur",  "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e4",  "source": "src_pdam",   "target": "use_ct",     "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+    { "id": "e5",  "source": "src_pdam",   "target": "use_kolam",  "rule": { "type": "percentage", "value": 10 }, "isReuse": false },
+    { "id": "e6",  "source": "src_sumur",  "target": "use_laund",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e7",  "source": "src_hujan",  "target": "use_taman",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e8",  "source": "use_toilet", "target": "ww_bw",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e9",  "source": "use_shower", "target": "ww_gw",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e10", "source": "use_dapur",  "target": "ww_gw",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e11", "source": "use_laund",  "target": "ww_gw",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e12", "source": "use_kolam",  "target": "ww_gw",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e13", "source": "use_ct",     "target": "loss_evap",  "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e14", "source": "use_ct",     "target": "loss_drift", "rule": { "type": "percentage", "value": 5  }, "isReuse": false },
+    { "id": "e15", "source": "use_ct",     "target": "ww_blow",    "rule": { "type": "percentage", "value": 80 }, "isReuse": false },
+    { "id": "e16", "source": "use_taman",  "target": "dst_nr",     "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e17", "source": "ww_bw",      "target": "tp_eq",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e18", "source": "ww_gw",      "target": "tp_eq",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e19", "source": "ww_blow",    "target": "tp_eq",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e20", "source": "tp_eq",      "target": "tp_bio",     "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e21", "source": "tp_bio",     "target": "tp_clo",     "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e22", "source": "tp_clo",     "target": "dst_sungai", "rule": { "type": "percentage", "value": 70 }, "isReuse": false },
+    { "id": "e23", "source": "tp_clo",     "target": "dst_reuse",  "rule": { "type": "percentage", "value": 30 }, "isReuse": true  },
+
+    { "id": "e24", "source": "loss_evap",  "target": "dst_nr",     "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e25", "source": "loss_drift", "target": "dst_nr",     "rule": { "type": "percentage", "value": 100 }, "isReuse": false }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "projectName": "Template PKS (Pabrik Kelapa Sawit)",
+    "clientName": "",
+    "date": "2025-01-01",
+    "unit": "m3_per_hari",
+    "notes": "Template neraca air PKS. POME (Palm Oil Mill Effluent) dapat dimanfaatkan untuk land application sesuai KepmenLH 28/2003 dan Permentan 11/2015. BOD land application maks 5.000 mg/L.",
+    "regulatoryVersion": "Permen LHK 5/2021",
+    "industrySector": "pks"
+  },
+  "nodes": [
+    { "id": "src_sw",  "type": "source", "subtype": "surface_water",   "label": "Air Permukaan (Kolam/Sungai)", "value": 200, "position": { "x": 80, "y": 220 } },
+    { "id": "src_gwd", "type": "source", "subtype": "groundwater_deep","label": "Sumur Dalam",                  "value": 30,  "position": { "x": 80, "y": 440 } },
+
+    { "id": "use_steril","type": "usage", "subtype": "sterilizer_pks",       "label": "Perebusan TBS (Sterilizer)", "value": 0, "position": { "x": 280, "y": 120 } },
+    { "id": "use_boiler","type": "usage", "subtype": "boiler_makeup",         "label": "Make-up Boiler",             "value": 0, "position": { "x": 280, "y": 320 } },
+    { "id": "use_dom",   "type": "usage", "subtype": "toilet_urinoir",        "label": "Domestik (Camp & Kantor)",   "value": 0, "position": { "x": 280, "y": 480 } },
+
+    { "id": "loss_uap_steril","type": "split_loss", "subtype": "steam_loss",  "label": "Uap / Kondensat Sterilizer", "value": 0, "position": { "x": 480, "y": 60  } },
+    { "id": "loss_uap_boiler","type": "split_loss", "subtype": "steam_loss",  "label": "Uap Boiler",                 "value": 0, "position": { "x": 480, "y": 280 } },
+
+    { "id": "ww_pome",   "type": "split_classify", "subtype": "industrial_process", "label": "POME (Palm Oil Mill Effluent)", "value": 0, "position": { "x": 480, "y": 180 } },
+    { "id": "ww_boilerbd","type": "split_classify", "subtype": "boiler_blowdown",   "label": "Blowdown Boiler",               "value": 0, "position": { "x": 480, "y": 400 } },
+    { "id": "ww_dom",    "type": "split_classify", "subtype": "domestic_mixed",     "label": "Air Limbah Domestik",           "value": 0, "position": { "x": 480, "y": 530 } },
+
+    { "id": "tp_uasb",   "type": "treatment_unit", "subtype": "uasb",              "label": "Kolam Anaerobik (UASB/Lagoon)", "value": 0, "position": { "x": 680, "y": 180 } },
+    { "id": "tp_sep",    "type": "treatment_unit", "subtype": "septic_tank",       "label": "Septic Tank",                   "value": 0, "position": { "x": 680, "y": 480 } },
+    { "id": "tp_eq",     "type": "treatment_unit", "subtype": "equalization_tank", "label": "Bak Ekualisasi (Blowdown)",     "value": 0, "position": { "x": 680, "y": 360 } },
+
+    { "id": "dst_la_pks","type": "final_destination", "subtype": "la_pks_palm",            "label": "Land Application - Kebun Sawit", "value": 0, "position": { "x": 880, "y": 300 } },
+    { "id": "dst_sungai","type": "final_destination", "subtype": "discharge_surface_river","label": "Sungai (Blowdown Treated)",      "value": 0, "position": { "x": 880, "y": 440 } },
+    { "id": "dst_nr",    "type": "final_destination", "subtype": "nr_evaporation",         "label": "Pelepasan Alami (Uap)",           "value": 0, "position": { "x": 880, "y": 160 } }
+  ],
+  "edges": [
+    { "id": "e1", "source": "src_sw",  "target": "use_steril", "rule": { "type": "percentage", "value": 80 }, "isReuse": false },
+    { "id": "e2", "source": "src_sw",  "target": "use_boiler", "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e3", "source": "src_sw",  "target": "use_dom",    "rule": { "type": "percentage", "value": 5  }, "isReuse": false },
+    { "id": "e4", "source": "src_gwd", "target": "use_boiler", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e5", "source": "use_steril", "target": "loss_uap_steril", "rule": { "type": "percentage", "value": 50 }, "isReuse": false },
+    { "id": "e6", "source": "use_steril", "target": "ww_pome",         "rule": { "type": "percentage", "value": 50 }, "isReuse": false },
+    { "id": "e7", "source": "use_boiler", "target": "loss_uap_boiler", "rule": { "type": "percentage", "value": 40 }, "isReuse": false },
+    { "id": "e8", "source": "use_boiler", "target": "ww_boilerbd",     "rule": { "type": "percentage", "value": 60 }, "isReuse": false },
+    { "id": "e9", "source": "use_dom",    "target": "ww_dom",          "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e10", "source": "ww_pome",    "target": "tp_uasb",    "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e11", "source": "ww_boilerbd","target": "tp_eq",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e12", "source": "ww_dom",     "target": "tp_sep",     "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e13", "source": "tp_uasb",    "target": "dst_la_pks", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e14", "source": "tp_sep",     "target": "dst_la_pks", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e15", "source": "tp_eq",      "target": "dst_sungai", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e16", "source": "loss_uap_steril", "target": "dst_nr", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e17", "source": "loss_uap_boiler", "target": "dst_nr", "rule": { "type": "percentage", "value": 100 }, "isReuse": false }
+  ]
+}

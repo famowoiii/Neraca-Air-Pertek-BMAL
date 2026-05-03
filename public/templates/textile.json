@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "projectName": "Template Pabrik Tekstil",
+    "clientName": "",
+    "date": "2025-01-01",
+    "unit": "m3_per_hari",
+    "notes": "Template neraca air industri tekstil. Air limbah proses mengandung zat warna dan bahan kimia, wajib diolah sebelum dibuang. RO digunakan untuk reuse air proses.",
+    "regulatoryVersion": "Permen LHK 5/2021",
+    "industrySector": "textile"
+  },
+  "nodes": [
+    { "id": "src_gwd",  "type": "source", "subtype": "groundwater_deep", "label": "Sumur Dalam",   "value": 200, "position": { "x": 80, "y": 280 } },
+    { "id": "src_pdam", "type": "source", "subtype": "pdam",             "label": "PDAM (Domestik)","value": 100, "position": { "x": 80, "y": 480 } },
+
+    { "id": "use_dyeing", "type": "usage", "subtype": "dyeing_textile",       "label": "Pencelupan & Pewarnaan",      "value": 0, "position": { "x": 280, "y": 60  } },
+    { "id": "use_boiler", "type": "usage", "subtype": "boiler_makeup",         "label": "Make-up Boiler",              "value": 0, "position": { "x": 280, "y": 170 } },
+    { "id": "use_ct",     "type": "usage", "subtype": "cooling_tower_makeup",  "label": "Make-up Cooling Tower",       "value": 0, "position": { "x": 280, "y": 280 } },
+    { "id": "use_proc",   "type": "usage", "subtype": "process_water",         "label": "Air Proses (Scouring/Finish)","value": 0, "position": { "x": 280, "y": 390 } },
+    { "id": "use_cip",    "type": "usage", "subtype": "cip_cleaning",          "label": "CIP Cleaning Mesin",          "value": 0, "position": { "x": 280, "y": 480 } },
+    { "id": "use_dom",    "type": "usage", "subtype": "toilet_urinoir",        "label": "Kebutuhan Domestik Karyawan", "value": 0, "position": { "x": 280, "y": 570 } },
+
+    { "id": "loss_boiler","type": "split_loss", "subtype": "steam_loss",  "label": "Uap Boiler",           "value": 0, "position": { "x": 480, "y": 130 } },
+    { "id": "loss_evap",  "type": "split_loss", "subtype": "evaporation", "label": "Penguapan Cooling Tower","value": 0, "position": { "x": 480, "y": 240 } },
+
+    { "id": "ww_ind",      "type": "split_classify", "subtype": "industrial_process", "label": "Air Limbah Proses (Zat Warna)", "value": 0, "position": { "x": 480, "y": 380 } },
+    { "id": "ww_bd_boiler","type": "split_classify", "subtype": "boiler_blowdown",    "label": "Blowdown Boiler",               "value": 0, "position": { "x": 480, "y": 490 } },
+    { "id": "ww_bd_ct",    "type": "split_classify", "subtype": "cooling_blowdown",   "label": "Blowdown Cooling Tower",        "value": 0, "position": { "x": 480, "y": 580 } },
+    { "id": "ww_dom",      "type": "split_classify", "subtype": "domestic_mixed",     "label": "Air Limbah Domestik",           "value": 0, "position": { "x": 480, "y": 670 } },
+
+    { "id": "tp_eq",  "type": "treatment_unit", "subtype": "equalization_tank",    "label": "Bak Ekualisasi",       "value": 0, "position": { "x": 680, "y": 400 } },
+    { "id": "tp_sed", "type": "treatment_unit", "subtype": "primary_sedimentation","label": "Koagulasi-Sedimentasi", "value": 0, "position": { "x": 680, "y": 500 } },
+    { "id": "tp_bio", "type": "treatment_unit", "subtype": "activated_sludge",     "label": "Lumpur Aktif",         "value": 0, "position": { "x": 680, "y": 600 } },
+    { "id": "tp_ro",  "type": "treatment_unit", "subtype": "reverse_osmosis",      "label": "Reverse Osmosis",      "value": 0, "position": { "x": 680, "y": 700 } },
+
+    { "id": "dst_nr",     "type": "final_destination", "subtype": "nr_evaporation",          "label": "Pelepasan Alami (Penguapan)", "value": 0, "position": { "x": 880, "y": 180 } },
+    { "id": "dst_reuse",  "type": "final_destination", "subtype": "reuse_process",           "label": "Reuse ke Proses Produksi",   "value": 0, "position": { "x": 880, "y": 620 } },
+    { "id": "dst_sungai", "type": "final_destination", "subtype": "discharge_surface_river", "label": "Sungai (Sesuai Baku Mutu)", "value": 0, "position": { "x": 880, "y": 760 } }
+  ],
+  "edges": [
+    { "id": "e1", "source": "src_gwd",  "target": "use_dyeing", "rule": { "type": "percentage", "value": 30 }, "isReuse": false },
+    { "id": "e2", "source": "src_gwd",  "target": "use_boiler", "rule": { "type": "percentage", "value": 25 }, "isReuse": false },
+    { "id": "e3", "source": "src_gwd",  "target": "use_ct",     "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+    { "id": "e4", "source": "src_gwd",  "target": "use_proc",   "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e5", "source": "src_gwd",  "target": "use_cip",    "rule": { "type": "percentage", "value": 10 }, "isReuse": false },
+    { "id": "e6", "source": "src_pdam", "target": "use_dom",    "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e7",  "source": "use_boiler", "target": "loss_boiler",   "rule": { "type": "percentage", "value": 40 }, "isReuse": false },
+    { "id": "e8",  "source": "use_boiler", "target": "ww_bd_boiler",  "rule": { "type": "percentage", "value": 60 }, "isReuse": false },
+    { "id": "e9",  "source": "use_ct",     "target": "loss_evap",     "rule": { "type": "percentage", "value": 30 }, "isReuse": false },
+    { "id": "e10", "source": "use_ct",     "target": "ww_bd_ct",      "rule": { "type": "percentage", "value": 70 }, "isReuse": false },
+    { "id": "e11", "source": "use_dyeing", "target": "ww_ind",        "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e12", "source": "use_proc",   "target": "ww_ind",        "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e13", "source": "use_cip",    "target": "ww_ind",        "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e14", "source": "use_dom",    "target": "ww_dom",        "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e15", "source": "ww_ind",      "target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e16", "source": "ww_dom",      "target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e17", "source": "ww_bd_boiler","target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e18", "source": "ww_bd_ct",    "target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e19", "source": "tp_eq",  "target": "tp_sed", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e20", "source": "tp_sed", "target": "tp_bio", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e21", "source": "tp_bio", "target": "tp_ro",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e22", "source": "tp_ro",  "target": "dst_reuse",  "rule": { "type": "percentage", "value": 80 }, "isReuse": true  },
+    { "id": "e23", "source": "tp_ro",  "target": "dst_sungai", "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+
+    { "id": "e24", "source": "loss_boiler", "target": "dst_nr", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e25", "source": "loss_evap",   "target": "dst_nr", "rule": { "type": "percentage", "value": 100 }, "isReuse": false }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "projectName": "Template Klinik / Rumah Sakit",
+    "clientName": "",
+    "date": "2025-01-01",
+    "unit": "m3_per_hari",
+    "notes": "Template neraca air sektor fasilitas kesehatan. Limbah infeksius (B3) wajib dikelola pihak ketiga berizin sesuai PP 22/2021.",
+    "regulatoryVersion": "Permen LHK 5/2021",
+    "industrySector": "clinic"
+  },
+  "nodes": [
+    { "id": "src_pdam",  "type": "source", "subtype": "pdam",             "label": "PDAM",                     "value": 80, "position": { "x": 80, "y": 200 } },
+    { "id": "src_gwd",   "type": "source", "subtype": "groundwater_deep", "label": "Sumur Dalam (Backup)",     "value": 20, "position": { "x": 80, "y": 400 } },
+
+    { "id": "use_lab",    "type": "usage", "subtype": "lab_analysis",       "label": "Laboratorium",             "value": 0, "position": { "x": 280, "y": 60  } },
+    { "id": "use_steril", "type": "usage", "subtype": "sterilization",      "label": "Sterilisasi Medis",        "value": 0, "position": { "x": 280, "y": 150 } },
+    { "id": "use_hemo",   "type": "usage", "subtype": "hemodialisa",        "label": "Hemodialisa",              "value": 0, "position": { "x": 280, "y": 240 } },
+    { "id": "use_dark",   "type": "usage", "subtype": "darkroom_radiology", "label": "Radiologi",                "value": 0, "position": { "x": 280, "y": 330 } },
+    { "id": "use_toilet", "type": "usage", "subtype": "toilet_urinoir",     "label": "Toilet (Pasien & Staff)", "value": 0, "position": { "x": 280, "y": 420 } },
+    { "id": "use_shower", "type": "usage", "subtype": "wastafel_shower",    "label": "Wastafel / Shower",        "value": 0, "position": { "x": 280, "y": 510 } },
+    { "id": "use_canteen","type": "usage", "subtype": "kitchen_canteen",    "label": "Dapur / Kantin",           "value": 0, "position": { "x": 280, "y": 600 } },
+    { "id": "use_laund",  "type": "usage", "subtype": "laundry_domestic",   "label": "Laundry Linen",            "value": 0, "position": { "x": 280, "y": 690 } },
+
+    { "id": "ww_b3",   "type": "split_classify", "subtype": "infectious_b3",  "label": "Air Limbah Infeksius (B3)",     "value": 0, "position": { "x": 480, "y": 190 } },
+    { "id": "ww_dm",   "type": "split_classify", "subtype": "domestic_mixed", "label": "Air Limbah Domestik Campuran", "value": 0, "position": { "x": 480, "y": 540 } },
+
+    { "id": "tp_eq",   "type": "treatment_unit", "subtype": "equalization_tank", "label": "Bak Ekualisasi",     "value": 0, "position": { "x": 680, "y": 480 } },
+    { "id": "tp_bio",  "type": "treatment_unit", "subtype": "biofilter_aerob",   "label": "Biofilter Aerob",    "value": 0, "position": { "x": 680, "y": 580 } },
+    { "id": "tp_uv",   "type": "treatment_unit", "subtype": "uv_disinfection",   "label": "Disinfeksi UV",      "value": 0, "position": { "x": 680, "y": 680 } },
+
+    { "id": "dst_b3",    "type": "final_destination", "subtype": "tp_b3_processor",          "label": "Pengolah B3 Berizin",       "value": 0, "position": { "x": 880, "y": 190 } },
+    { "id": "dst_sungai","type": "final_destination", "subtype": "discharge_surface_river",  "label": "Sungai (Sesuai Baku Mutu)", "value": 0, "position": { "x": 880, "y": 600 } },
+    { "id": "dst_reuse", "type": "final_destination", "subtype": "reuse_toilet_flushing",    "label": "Reuse Flushing Toilet",      "value": 0, "position": { "x": 880, "y": 720 } }
+  ],
+  "edges": [
+    { "id": "e1",  "source": "src_pdam",   "target": "use_lab",    "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e2",  "source": "src_pdam",   "target": "use_steril", "rule": { "type": "percentage", "value": 10 }, "isReuse": false },
+    { "id": "e3",  "source": "src_pdam",   "target": "use_hemo",   "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e4",  "source": "src_pdam",   "target": "use_toilet", "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+    { "id": "e5",  "source": "src_pdam",   "target": "use_shower", "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+    { "id": "e6",  "source": "src_pdam",   "target": "use_canteen","rule": { "type": "percentage", "value": 10 }, "isReuse": false },
+    { "id": "e7",  "source": "src_pdam",   "target": "use_laund",  "rule": { "type": "percentage", "value": 10 }, "isReuse": false },
+    { "id": "e8",  "source": "src_gwd",    "target": "use_dark",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e9",  "source": "use_lab",    "target": "ww_b3",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e10", "source": "use_steril", "target": "ww_b3",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e11", "source": "use_hemo",   "target": "ww_b3",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e12", "source": "use_dark",   "target": "ww_b3",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e13", "source": "use_toilet", "target": "ww_dm",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e14", "source": "use_shower", "target": "ww_dm",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e15", "source": "use_canteen","target": "ww_dm",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e16", "source": "use_laund",  "target": "ww_dm",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e17", "source": "ww_b3",   "target": "dst_b3",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e18", "source": "ww_dm",   "target": "tp_eq",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e19", "source": "tp_eq",   "target": "tp_bio",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e20", "source": "tp_bio",  "target": "tp_uv",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e21", "source": "tp_uv",   "target": "dst_sungai", "rule": { "type": "percentage", "value": 90 }, "isReuse": false },
+    { "id": "e22", "source": "tp_uv",   "target": "dst_reuse",  "rule": { "type": "percentage", "value": 10 }, "isReuse": true  }
+  ]
+}

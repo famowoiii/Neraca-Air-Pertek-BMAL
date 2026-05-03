@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "projectName": "Template Pertambangan",
+    "clientName": "",
+    "date": "2025-01-01",
+    "unit": "m3_per_hari",
+    "notes": "Template neraca air sektor pertambangan. Air pit dewatering dan limpasan area produksi wajib diolah di settling pond sebelum dibuang ke badan air.",
+    "regulatoryVersion": "Permen LHK 5/2021",
+    "industrySector": "mining"
+  },
+  "nodes": [
+    { "id": "src_sw",  "type": "source", "subtype": "surface_water",      "label": "Air Pit Dewatering",         "value": 200, "position": { "x": 80, "y": 180 } },
+    { "id": "src_gsd", "type": "source", "subtype": "groundwater_shallow", "label": "Sumur Dangkal (Camp)",       "value": 30,  "position": { "x": 80, "y": 380 } },
+    { "id": "src_rh",  "type": "source", "subtype": "rainwater",           "label": "Air Hujan / Limpasan",       "value": 50,  "position": { "x": 80, "y": 560 } },
+
+    { "id": "use_wash", "type": "usage", "subtype": "product_washing",  "label": "Pencucian Batubara",         "value": 0, "position": { "x": 280, "y": 120 } },
+    { "id": "use_dust", "type": "usage", "subtype": "dust_suppression", "label": "Penyemprotan Debu Tambang",  "value": 0, "position": { "x": 280, "y": 300 } },
+    { "id": "use_dom",  "type": "usage", "subtype": "toilet_urinoir",   "label": "Domestik Camp & Kantor",     "value": 0, "position": { "x": 280, "y": 480 } },
+
+    { "id": "ww_ind",         "type": "split_classify", "subtype": "industrial_process",    "label": "Air Limbah Proses (Pencucian)", "value": 0, "position": { "x": 480, "y": 120 } },
+    { "id": "ww_dom",         "type": "split_classify", "subtype": "domestic_mixed",        "label": "Air Limbah Domestik Camp",     "value": 0, "position": { "x": 480, "y": 360 } },
+    { "id": "ww_storm_cont",  "type": "split_classify", "subtype": "stormwater_contaminated","label": "Limpasan Area Produksi",       "value": 0, "position": { "x": 480, "y": 500 } },
+    { "id": "ww_storm_clean", "type": "split_classify", "subtype": "stormwater_clean",      "label": "Limpasan Area Bersih",         "value": 0, "position": { "x": 480, "y": 620 } },
+
+    { "id": "tp_settling", "type": "treatment_unit", "subtype": "primary_sedimentation", "label": "Settling Pond / Kolam Pengendap", "value": 0, "position": { "x": 680, "y": 280 } },
+    { "id": "tp_daf",      "type": "treatment_unit", "subtype": "daf_flotation",         "label": "DAF / Koagulasi-Flokulasi",       "value": 0, "position": { "x": 680, "y": 400 } },
+    { "id": "tp_sep",      "type": "treatment_unit", "subtype": "septic_tank",           "label": "Septic Tank Portable",            "value": 0, "position": { "x": 680, "y": 520 } },
+
+    { "id": "dst_sungai",    "type": "final_destination", "subtype": "discharge_surface_river", "label": "Sungai (Baku Mutu Tambang)",   "value": 0, "position": { "x": 880, "y": 330 } },
+    { "id": "dst_la_dust",   "type": "final_destination", "subtype": "la_road_dust_suppression","label": "Infiltrasi (Dust Suppression)","value": 0, "position": { "x": 880, "y": 480 } },
+    { "id": "dst_la_dom",    "type": "final_destination", "subtype": "la_landscape",             "label": "Land Application Domestik",    "value": 0, "position": { "x": 880, "y": 600 } },
+    { "id": "dst_runoff",    "type": "final_destination", "subtype": "nr_runoff",                "label": "Limpasan Alami (Clean)",       "value": 0, "position": { "x": 880, "y": 700 } }
+  ],
+  "edges": [
+    { "id": "e1", "source": "src_sw",  "target": "use_wash", "rule": { "type": "percentage", "value": 80 }, "isReuse": false },
+    { "id": "e2", "source": "src_sw",  "target": "use_dust", "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e3", "source": "src_sw",  "target": "use_dom",  "rule": { "type": "percentage", "value": 5  }, "isReuse": false },
+    { "id": "e4", "source": "src_gsd", "target": "use_dom",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e5", "source": "src_rh",  "target": "ww_storm_cont",  "rule": { "type": "percentage", "value": 60 }, "isReuse": false },
+    { "id": "e6", "source": "src_rh",  "target": "ww_storm_clean", "rule": { "type": "percentage", "value": 40 }, "isReuse": false },
+
+    { "id": "e7",  "source": "use_wash", "target": "ww_ind", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e8",  "source": "use_dust", "target": "dst_la_dust", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e9",  "source": "use_dom",  "target": "ww_dom", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e10", "source": "ww_ind",        "target": "tp_settling", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e11", "source": "ww_storm_cont", "target": "tp_settling", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e12", "source": "ww_dom",        "target": "tp_sep",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e13", "source": "ww_storm_clean","target": "dst_runoff",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e14", "source": "tp_settling", "target": "tp_daf",      "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e15", "source": "tp_daf",      "target": "dst_sungai",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e16", "source": "tp_sep",      "target": "dst_la_dom",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false }
+  ]
+}

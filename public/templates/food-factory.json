@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "projectName": "Template Pabrik Makanan",
+    "clientName": "",
+    "date": "2025-01-01",
+    "unit": "m3_per_hari",
+    "notes": "Template neraca air sektor industri makanan dan minuman. Pastikan efluent memenuhi baku mutu industri makanan sesuai Permen LH 5/2014.",
+    "regulatoryVersion": "Permen LHK 5/2021",
+    "industrySector": "food_factory"
+  },
+  "nodes": [
+    { "id": "src_gwd", "type": "source", "subtype": "groundwater_deep", "label": "Sumur Dalam", "value": 200, "position": { "x": 80, "y": 340 } },
+
+    { "id": "use_boiler",  "type": "usage", "subtype": "boiler_makeup",        "label": "Make-up Boiler",            "value": 0, "position": { "x": 280, "y": 60  } },
+    { "id": "use_produksi","type": "usage", "subtype": "process_water",        "label": "Air Proses Produksi",        "value": 0, "position": { "x": 280, "y": 190 } },
+    { "id": "use_ct",      "type": "usage", "subtype": "cooling_tower_makeup", "label": "Make-up Cooling Tower",      "value": 0, "position": { "x": 280, "y": 340 } },
+    { "id": "use_domestik","type": "usage", "subtype": "toilet_urinoir",       "label": "Kebutuhan Domestik Karyawan","value": 0, "position": { "x": 280, "y": 490 } },
+
+    { "id": "loss_steam",  "type": "split_loss", "subtype": "steam_loss",   "label": "Kehilangan Uap Boiler",  "value": 0, "position": { "x": 480, "y": 60  } },
+    { "id": "loss_evap",   "type": "split_loss", "subtype": "evaporation",  "label": "Penguapan Cooling Tower", "value": 0, "position": { "x": 480, "y": 300 } },
+
+    { "id": "ww_ind",      "type": "split_classify", "subtype": "industrial_process", "label": "Air Limbah Proses",       "value": 0, "position": { "x": 480, "y": 190 } },
+    { "id": "ww_bd_boiler","type": "split_classify", "subtype": "boiler_blowdown",    "label": "Blowdown Boiler",         "value": 0, "position": { "x": 480, "y": 420 } },
+    { "id": "ww_bd_ct",    "type": "split_classify", "subtype": "cooling_blowdown",   "label": "Blowdown Cooling Tower",  "value": 0, "position": { "x": 480, "y": 530 } },
+    { "id": "ww_dom",      "type": "split_classify", "subtype": "domestic_mixed",     "label": "Air Limbah Domestik",     "value": 0, "position": { "x": 480, "y": 640 } },
+
+    { "id": "tp_ogt", "type": "treatment_unit", "subtype": "oil_grease_trap",    "label": "Perangkap Minyak & Lemak", "value": 0, "position": { "x": 680, "y": 320 } },
+    { "id": "tp_eq",  "type": "treatment_unit", "subtype": "equalization_tank",  "label": "Bak Ekualisasi",           "value": 0, "position": { "x": 680, "y": 440 } },
+    { "id": "tp_bio", "type": "treatment_unit", "subtype": "activated_sludge",   "label": "Lumpur Aktif",             "value": 0, "position": { "x": 680, "y": 560 } },
+    { "id": "tp_sf",  "type": "treatment_unit", "subtype": "sand_filter",        "label": "Filter Pasir",             "value": 0, "position": { "x": 680, "y": 680 } },
+
+    { "id": "dst_nr",     "type": "final_destination", "subtype": "nr_evaporation",          "label": "Pelepasan Alami (Penguapan)", "value": 0, "position": { "x": 880, "y": 160 } },
+    { "id": "dst_sungai", "type": "final_destination", "subtype": "discharge_surface_river", "label": "Sungai (Sesuai Baku Mutu)",  "value": 0, "position": { "x": 880, "y": 580 } },
+    { "id": "dst_reuse",  "type": "final_destination", "subtype": "reuse_garden",            "label": "Reuse Penyiraman",            "value": 0, "position": { "x": 880, "y": 720 } }
+  ],
+  "edges": [
+    { "id": "e1", "source": "src_gwd", "target": "use_boiler",   "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+    { "id": "e2", "source": "src_gwd", "target": "use_produksi", "rule": { "type": "percentage", "value": 50 }, "isReuse": false },
+    { "id": "e3", "source": "src_gwd", "target": "use_ct",       "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+    { "id": "e4", "source": "src_gwd", "target": "use_domestik", "rule": { "type": "percentage", "value": 15 }, "isReuse": false },
+
+    { "id": "e5",  "source": "use_boiler",   "target": "loss_steam",   "rule": { "type": "percentage", "value": 40 }, "isReuse": false },
+    { "id": "e6",  "source": "use_boiler",   "target": "ww_bd_boiler", "rule": { "type": "percentage", "value": 60 }, "isReuse": false },
+    { "id": "e7",  "source": "use_produksi", "target": "ww_ind",       "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e8",  "source": "use_ct",       "target": "loss_evap",    "rule": { "type": "percentage", "value": 20 }, "isReuse": false },
+    { "id": "e9",  "source": "use_ct",       "target": "ww_bd_ct",     "rule": { "type": "percentage", "value": 80 }, "isReuse": false },
+    { "id": "e10", "source": "use_domestik", "target": "ww_dom",       "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+
+    { "id": "e11", "source": "ww_ind",      "target": "tp_ogt", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e12", "source": "ww_dom",      "target": "tp_ogt", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e13", "source": "tp_ogt",      "target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e14", "source": "ww_bd_boiler","target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e15", "source": "ww_bd_ct",    "target": "tp_eq",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e16", "source": "tp_eq",  "target": "tp_bio",  "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e17", "source": "tp_bio", "target": "tp_sf",   "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e18", "source": "tp_sf",  "target": "dst_sungai", "rule": { "type": "percentage", "value": 70 }, "isReuse": false },
+    { "id": "e19", "source": "tp_sf",  "target": "dst_reuse",  "rule": { "type": "percentage", "value": 30 }, "isReuse": true  },
+
+    { "id": "e20", "source": "loss_steam", "target": "dst_nr", "rule": { "type": "percentage", "value": 100 }, "isReuse": false },
+    { "id": "e21", "source": "loss_evap",  "target": "dst_nr", "rule": { "type": "percentage", "value": 100 }, "isReuse": false }
+  ]
+}
